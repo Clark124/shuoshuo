@@ -1,6 +1,5 @@
 
 var formidable = require('formidable')
-var db = require('../models/db')
 var md5 = require('../models/md5')
 var fs = require('fs');
 var gm = require('gm');
