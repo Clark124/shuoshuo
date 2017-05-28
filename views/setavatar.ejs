@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+  
+    <title>班级说说</title>
+
+    
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+   
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">班级说说</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active" ><a href="/">全部说说 <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">我的说说</a></li>
+                <li><a href="/alluser">成员列表</a></li>
+            </ul>  
+            <ul class="nav navbar-nav navbar-right">
+            <% if (isLogin){ %>
+                <li></li>
+                <li><a href="#">欢迎您！ <%= user.username %></a></li>
+                <li class="active"><a href="#">设置个人资料</a></li>
+                <li><a href="#"> | </a></li>
+                <li><a href="/logout">注销</a></li>
+            <% } else {%>
+                <li ><a href="/login">登录</a></li>
+                <li ><a href="/regist">注册</a></li>
+            <% } %>
+            </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <section>
+        <div class="container">
+            <h1>上传头像</h1>
+            <div class="row">
+                <div class="col-md-4">
+                    <form action="/dosetavatar" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="">更改头像</label>
+                            <input type="file" class="form-control" id=" headPortrait" name="headPortrait">
+                        </div>
+                        <input type="submit" id="uploadimg" class="btn btn-default" value="上传">
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-8"></div>
+            
+        </div>
+    </section>
+
+  
+    <script src="/js/jquery-1.11.3.min.js"></script>
+   
+    <script src="/js/bootstrap.min.js"></script>
+  </body>
+</html>

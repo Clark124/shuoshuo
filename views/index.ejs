@@ -1,13 +1,265 @@
-<!DOCTYPE HTML>
-<html>
-  <head>
-    <title>LeanEngine</title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
-  </head>
-  <body>
-    <h1>LeanEngine</h1>
-    <p>这是 LeanEngine 的示例应用</p>
-    <p>当前时间：<%= currentTime %></p>
-    <p><a href="/todos">一个简单的「TODO 列表」示例</a></p>
-  </body>
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+
+    <title>班级说说</title>
+
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #errmsg {
+            display: none;
+            margin-top: 90px;
+        }
+
+        #allshuoshuo {
+            height: 1000px;
+        }
+
+        #allshuoshuo>div {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        #allshuoshuo p {
+            word-break: break-word;
+        }
+
+        #allshuoshuo img {
+            border-radius: 50%;
+        }
+
+        .my-name{
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #content{
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+                <a class="navbar-brand" href="/">班级说说</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">全部说说 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="/user/<%= user.username %>">我的说说</a></li>
+                    <li><a href="/userslist">成员列表</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <% if (isLogin){ %>
+                        <li></li>
+                        <li><a href="#">欢迎您！ <%= user.username %></a></li>
+                        <li><a href="/setavatar">设置个人资料</a></li>
+                        <li><a href="#"> | </a></li>
+                        <li><a href="/logout">注销</a></li>
+
+                        <% } else {%>
+                            <li><a href="/login">登录</a></li>
+                            <li><a href="/regist">注册</a></li>
+                            <% } %>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <section>
+        <% if(!isLogin){ %>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h1>欢迎！</h1>
+                        <p>班级说说，我们交流的园地，欢迎注册！</p>
+                        <a href="/regist" class="btn btn-primary">注册</a>
+                    </div>
+                    <div class="col-md-4">
+                        <h2>已有账号，请登录</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="username">用户名</label>
+                                <input type="text" class="form-control" name="username" id="username" placeholder="用户名">
+                            </div>
+                            <div class="form-group">
+                                <label for="Password">密码</label>
+                                <input type="password" class="form-control" name="password" id="password" placeholder="密码">
+                            </div>
+                            <button type="button" id="signin" class="btn btn-default">登录</button>
+                        </form>
+                    </div>
+                    <div id="errmsg" class="alert alert-danger col-md-4" role="alert"></div>
+                </div>
+
+            </div>
+            <% }else{ %>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src='/avatar/<%= avatar %>' alt="">
+                        </div>
+                        <div class="col-md-4">
+                            <p class="my-name text-center">
+                                <%= user.username %>
+                            </p>
+                            <textarea name="content" id="content" class="form-control"></textarea>
+                            <button class="btn btn-info" id="dist">发表说说</button>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+    </section>
+    <section>
+        <div class="container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                </ul>
+            </nav>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <% if(isLogin){ %>
+                <div class="row" id="allshuoshuo">
+
+                </div>
+                <% } %>
+        </div>
+    </section>
+
+    <script type="text/template" id="moban">
+        <div class="col-md-4 grid">
+            <h3>
+                <img src='/avatar/{{=avatar}}' style="width:40px" alt=""> {{=username}} 说：
+            </h3>
+            <p>{{=content}}</p>
+            <p>{{=datatime}}</p>
+            <p><a href="#" class="btn btn-default" role="button">查看详细</a></p>
+        </div>
+
+    </script>
+
+    <script src="/js/jquery-1.11.3.min.js"></script>
+
+    <script src="/js/bootstrap.min.js"></script>
+    <script src='/js/underscore-noflect.js'></script>
+    <script>
+        var $allshuoshuo = $('#allshuoshuo');
+        //得到模板
+        var compiled = _.template($("#moban").html());
+
+        //Ajax读取文章列表
+        if ($("#allshuoshuo").is(":visible") == true) {
+            getpage(0)
+            $.get('/getAllcount', function (ret) {
+                var amount = parseInt(ret);
+                pageamount = Math.ceil(amount / 10);
+                for (var i = 0; i < pageamount; i++) {
+                    $(".pagination").append('<li><a href="javascript:void(0);">' + i + '</a></li>')
+                }
+            })
+        }
+
+        $('.pagination').on('click', 'li', function () {
+
+            var index = $(this).index()
+            console.log(index);
+            getpage(index);
+        })
+        function getpage(n) {
+            $('#allshuoshuo').html("");
+            $.ajax({
+                url: '/getallshuoshuo',
+                data: { page: n },
+                type: 'get',
+                success: function (ret) {
+                    iterator(0);
+                    function iterator(i) {
+                        if (i == ret.length) {
+                            //在这里书写请求完毕之后做的事情
+                            return;
+                        }
+                        $.ajax({
+                            url: '/getuserinfo',
+                            data: { username: ret[i].username },
+                            type: 'get',
+                            success: function (ret1) {
+                                ret[i].avatar = ret1.avatar;
+                                //组装模板
+                                var htmlstring = compiled(ret[i]);
+                                $("#allshuoshuo").append($(htmlstring))
+                                iterator(i + 1);
+                            }
+                        })
+                    }
+                }
+            })
+        }
+
+
+
+        //注册按钮的事件，用ajax提交表单
+        $('input').focus(function () {
+            $('#errmsg').fadeOut();
+        });
+        //登录
+        $("#signin").click(function () {
+            $.post('/dologin', {
+                "username": $("#username").val(),
+                "password": $("#password").val()
+            }, function (result) {
+                console.log(result);
+                if (result == "1") {
+                    window.location = "/";
+                } else if (result.code == 211) {
+                    $('#errmsg').fadeIn()
+                    $('#errmsg').html('用户名不存在')
+                } else if (result.code == 210) {
+                    $('#errmsg').fadeIn()
+                    $('#errmsg').html('密码错误')
+                }
+            })
+        })
+
+        //点击发布按钮
+        $('#dist').click(function () {
+            $.post('/dodist', {
+                "content": $('#content').val()
+            }, function (result) {
+                if (result == "1") {
+                    alert('发布成功');
+                    window.location = "/";
+                } else {
+                    alert('请联系管理员，发布失败')
+                }
+            })
+        })
+    </script>
+</body>
+
 </html>
