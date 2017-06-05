@@ -297,6 +297,10 @@ exports.getAllCount = function (req, res) {
 
 exports.showUser = function (req, res) {
     var username = req.params.username;
+    if(!username){
+        res.redirect('/');
+        return;
+    }
     var queryPost = new AV.Query('Posts');
     queryPost.equalTo('username', username);
     queryPost.descending('createdAt');
