@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
@@ -11,47 +12,51 @@
       <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
-        #errmsg{
+        #errmsg {
             display: none;
             margin-top: 7px;
         }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">班级说说</a>
+                <a class="navbar-brand" href="/">班级说说</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li  ><a href="/">全部说说 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">我的说说</a></li>
-                <li><a href="/alluser">成员列表</a></li>
-            </ul>  
-            <ul class="nav navbar-nav navbar-right">
-            <% if (isLogin){ %>
-                <li></li>
-                <li><a href="#">欢迎您！ <%= user.username %></a></li>
-                <li><a href="">设置个人资料</a></li>
-                <li><a href="#"> | </a></li>
-                <li><a href="/logout">注销</a></li>
-            <% } else {%>
-                <li ><a href="/login">登录</a></li>
-                <li class="active" ><a href="/regist">注册</a></li>
-            <% } %>
-            </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
+                <ul class="nav navbar-nav">
+                    <li><a href="/">全部说说 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">我的说说</a></li>
+                    <li><a href="/alluser">成员列表</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <% if (isLogin){ %>
+                        <li></li>
+                        <li><a href="#">欢迎您！ <%= user.username %></a></li>
+                        <li><a href="">设置个人资料</a></li>
+                        <li><a href="#"> | </a></li>
+                        <li><a href="/logout">注销</a></li>
+                        <% } else {%>
+                            <li><a href="/login">登录</a></li>
+                            <li class="active"><a href="/regist">注册</a></li>
+                            <% } %>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
     </nav>
     <section id="content">
         <div class="container">
@@ -67,7 +72,7 @@
                             <label for="Password">密码</label>
                             <input type="password" class="form-control" name="password" id="password" placeholder="密码">
                         </div>
-                        
+
                         <div class="checkbox">
                             <label>
                             <input type="checkbox"> 我遵守注册规定
@@ -85,26 +90,65 @@
     <script src="/js/jquery-1.11.3.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script>
-        $('input').focus(function(){
+        function isValidPassword(str) {
+            if (str.length < 6 || str.length > 20 || /\W/.test(str)) {
+                return false;
+            }
+            var count = 0;
+            if (/[a-z]/g.test(str)) count++;
+            if (/[A-Z]/g.test(str)) count++;
+            if (/[0-9]/g.test(str)) count++;
+            if (/_/g.test(str)) count++;
+            if (count >= 2) {
+                return true;
+            }else{
+                return false;
+            }
+        }
+        function isValidUsername(str){
+            return /^\w{6,20}$/.test(str)
+        }
+         $('#username').blur(function(){
+            if(isValidUsername($('#username').val())===false){
+                $('#errmsg').fadeIn();
+                $('#errmsg').html('用户名长度6-20个字符，只能包括字母、数字、下划线')     
+            }
+        })
+        $('#password').blur(function(){
+            if(isValidPassword($('#password').val())===false){
+                $('#errmsg').fadeIn();
+                $('#errmsg').html('密码长度6-20个字符，只包括大写字母、小写字母、数字、下划线，且至少至少包括两种')     
+            }
+        })
+       
+        $('input').focus(function () {
             $('#errmsg').fadeOut();
         })
-        $("#signup").click(function(){
-             $.post('/doregist',{
+        $("#signup").click(function () {
+            if(isValidUsername($('#username').val())===false){
+                $('#errmsg').fadeIn();
+                $('#errmsg').html('用户名长度6-20个字符，只能包括字母、数字、下划线')  
+                return;
+            }
+            if(isValidPassword($('#password').val())===false){
+                $('#errmsg').fadeIn();
+                $('#errmsg').html('密码长度6-20个字符，只包括大写字母、小写字母、数字、下划线，且至少至少包括两种') 
+                return;    
+            }
+            $.post('/doregist', {
                 "username": $("#username").val(),
                 "password": $("#password").val()
-            },function(result){
-                console.log(result);
-                if(result == "1"){
-                    console.log(1)
-                   alert('注册成功！将自动跳转到首页');
-                   window.location = "/";
-                }else if(result.code == 202){
+            }, function (result) {
+                if (result == "1") {
+                    alert('注册成功！将自动跳转到首页');
+                    window.location = "/";
+                } else if (result.code == 202) {
                     $('#errmsg').fadeIn()
                     $('#errmsg').html('用户名已存在')
                 }
             })
         })
-       
     </script>
-  </body>
+</body>
+
 </html>

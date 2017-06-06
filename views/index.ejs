@@ -188,7 +188,6 @@
         $('.pagination').on('click', 'li', function () {
 
             var index = $(this).index()
-            console.log(index);
             getpage(index);
         })
         function getpage(n) {
@@ -233,7 +232,6 @@
                 "username": $("#username").val(),
                 "password": $("#password").val()
             }, function (result) {
-                console.log(result);
                 if (result == "1") {
                     window.location = "/";
                 } else if (result.code == 211) {
