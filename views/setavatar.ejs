@@ -33,9 +33,9 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active" ><a href="/">全部说说 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">我的说说</a></li>
-                <li><a href="/alluser">成员列表</a></li>
+                <li class="" ><a href="/">全部说说 <span class="sr-only">(current)</span></a></li>
+               <li><a href="/user/<%= user.username %>">我的说说</a></li>
+                <li><a href="/userslist">成员列表</a></li>
             </ul>  
             <ul class="nav navbar-nav navbar-right">
             <% if (isLogin){ %>
